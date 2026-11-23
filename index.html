@@ -240,61 +240,65 @@
                     <ul id="task-list"></ul>
                 </article>
 
-                <!-- Расходы -->
-                <article class="tool-card" id="expenses">
-                    <h2>💰 Учёт расходов</h2>
+                
+<!-- Расходы -->
 
-                    <form id="expense-form">
-                        <input id="expense-title" type="text"
-                            placeholder="На что потратил?" required>
+<!-- Расходы -->
+<article class="tool-card" id="expenses">
 
-                        <input id="expense-amount" type="number"
-                            placeholder="Сумма (€)" min="0.01"
-                            step="0.01" required>
+    <h2>💰 Учёт расходов</h2>
+
+    <form id="expense-form">
+
+        <input
+            id="expense-title"
+            type="text"
+            placeholder="На что потратил?"
+            required
+        >
+
+        <input
+            id="expense-amount"
+            type="number"
+            placeholder="Сумма"
+            min="0.01"
+            step="0.01"
+            required
+        >
+
+        <select id="expense-category" required>
+            <option value="food">🍔 Еда</option>
+            <option value="transport">🚗 Транспорт</option>
+            <option value="shopping">🛍️ Покупки</option>
+            <option value="entertainment">🎮 Развлечения</option>
+            <option value="subscriptions">💻 Подписки</option>
+            <option value="other">📦 Другое</option>
+        </select>
+
+        <select id="expense-currency" required>
+            <option value="EUR">🇪🇺 EUR — Евро (€)</option>
+            <option value="USD">🇺🇸 USD — Доллар ($)</option>
+            <option value="RUB">🇷🇺 RUB — Рубль (₽)</option>
+            <option value="UAH">🇺🇦 UAH — Гривна (₴)</option>
+            <option value="GBP">🇬🇧 GBP — Фунт (£)</option>
+            <option value="PLN">🇵🇱 PLN — Злотый (zł)</option>
+            <option value="CHF">🇨🇭 CHF — Франк (CHF)</option>
+        </select>
+
+        <button type="submit">Добавить расход</button>
+
+    </form>
+
+    <p class="expense-total">
+        Всего потрачено:
+        <strong id="expense-total">0,00 €</strong>
+    </p>
+
+    <ul id="expense-list"></ul>
+
+</article>
 
 
-    
-<form id="expense-form">
-
-    
-
-    
-
-    <select id="expense-category" required>
-        <option value="food">🍔 Еда</option>
-        <option value="transport">🚗 Транспорт</option>
-        <option value="shopping">🛍️ Покупки</option>
-        <option value="entertainment">🎮 Развлечения</option>
-        <option value="subscriptions">💻 Подписки</option>
-        <option value="other">📦 Другое</option>
-    </select>
-
-    <select id="expense-currency" required>
-        <option value="EUR">🇪🇺 EUR — Евро (€)</option>
-        <option value="USD">🇺🇸 USD — Доллар ($)</option>
-        <option value="RUB">🇷🇺 RUB — Рубль (₽)</option>
-        <option value="UAH">🇺🇦 UAH — Гривна (₴)</option>
-        <option value="GBP">🇬🇧 GBP — Фунт (£)</option>
-        <option value="PLN">🇵🇱 PLN — Злотый (zł)</option>
-        <option value="CHF">🇨🇭 CHF — Франк (CHF)</option>
-    </select>
-
-    <button type="submit">Добавить расход</button>
-
-</form>
-
-
-
-                        <button type="submit">Добавить расход</button>
-                    </form>
-
-                    <p class="expense-total">
-                        Всего потрачено:
-                        <strong id="expense-total">0,00 €</strong>
-                    </p>
-
-                    <ul id="expense-list"></ul>
-                </article>
 
                 <!-- Заметки -->
                 <article class="tool-card" id="notes">
