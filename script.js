@@ -716,14 +716,19 @@ expenseForm.addEventListener("submit", async event => {
 
         expenseForm.reset();
 
-        // Возвращаем валюту формы к EUR
+        // Сохраняем выбранную валюту после очистки полей формы.
         const lastCurrency = localStorage.getItem(
-    "bubble-tools-last-expense-currency"
-);
+            "bubble-tools-last-expense-currency"
+        );
+        const defaultCurrency = localStorage.getItem(
+            "bubble-tools-default-currency"
+        );
 
-expenseCurrency.value = availableCurrencies.includes(lastCurrency)
-    ? lastCurrency
-    : (localStorage.getItem("bubble-tools-default-currency") || "EUR");
+        expenseCurrency.value = supportedCurrencies.includes(lastCurrency)
+            ? lastCurrency
+            : (supportedCurrencies.includes(defaultCurrency)
+                ? defaultCurrency
+                : "EUR");
 
         renderExpenses();
 
@@ -1424,7 +1429,7 @@ function showToast(message, type = "success") {if (localStorage.getItem("bubble-
                     email,
                     password,
                     options: {
-                        emailRedirectTo: window.location.origin
+                        emailRedirectTo: window.location.href
                     }
                 });
 
@@ -1500,7 +1505,6 @@ function showToast(message, type = "success") {if (localStorage.getItem("bubble-
    BUBBLE TOOLS 2.0 — SETTINGS FUNCTIONALITY
 ========================================== */
 
-// Элементы настроек
 const defaultCurrencySelect =
     document.getElementById("default-currency");
 
@@ -1510,15 +1514,12 @@ const settingsThemeSelect =
 const notificationsEnabled =
     document.getElementById("notifications-enabled");
 
+const availableCurrencies = supportedCurrencies.slice();
+
 
 // ==========================================
 // 1. ОСНОВНАЯ ВАЛЮТА
 // ==========================================
-
-const availableCurrencies = [
-    "EUR", "USD", "RUB", "UAH", "GBP", "PLN", "CHF"
-];
-
 
 function loadDefaultCurrency() {
     const savedDefault = localStorage.getItem(
@@ -1529,21 +1530,22 @@ function loadDefaultCurrency() {
         ? savedDefault
         : "EUR";
 
-    defaultCurrencySelect.value = defaultCurrency;
-
     const savedExpenseCurrency = localStorage.getItem(
         "bubble-tools-last-expense-currency"
     );
+
+    defaultCurrencySelect.value = defaultCurrency;
 
     expenseCurrency.value = availableCurrencies.includes(savedExpenseCurrency)
         ? savedExpenseCurrency
         : defaultCurrency;
 }
 
-
 loadDefaultCurrency();
 
 expenseCurrency.addEventListener("change", () => {
+    if (!availableCurrencies.includes(expenseCurrency.value)) return;
+
     localStorage.setItem(
         "bubble-tools-last-expense-currency",
         expenseCurrency.value
@@ -1555,21 +1557,12 @@ defaultCurrencySelect.addEventListener("change", () => {
 
     if (!availableCurrencies.includes(currency)) return;
 
-    localStorage.setItem(
-        "bubble-tools-default-currency",
-        currency
-    );
+    localStorage.setItem("bubble-tools-default-currency", currency);
+    localStorage.setItem("bubble-tools-last-expense-currency", currency);
 
     expenseCurrency.value = currency;
 
     showToast("Основная валюта изменена!", "success");
-    localStorage.setItem(
-    "bubble-tools-default-currency",
-    currency
-);localStorage.setItem(
-    "bubble-tools-last-expense-currency",
-    currency
-);
 });
 
 
@@ -1579,9 +1572,7 @@ defaultCurrencySelect.addEventListener("change", () => {
 
 function syncSettingsTheme() {
     settingsThemeSelect.value =
-        document.body.classList.contains("dark")
-            ? "dark"
-            : "light";
+        document.body.classList.contains("dark") ? "dark" : "light";
 }
 
 syncSettingsTheme();
@@ -1589,16 +1580,10 @@ syncSettingsTheme();
 settingsThemeSelect.addEventListener("change", () => {
     const theme = settingsThemeSelect.value;
 
-    document.body.classList.toggle(
-        "dark",
-        theme === "dark"
-    );
-
+    document.body.classList.toggle("dark", theme === "dark");
     localStorage.setItem("bubble-tools-theme", theme);
 
-    if (typeof updateThemeButton === "function") {
-        updateThemeButton();
-    }
+    updateThemeButton();
 
     showToast(
         theme === "dark"
@@ -1608,10 +1593,8 @@ settingsThemeSelect.addEventListener("change", () => {
     );
 });
 
-// Синхронизация с кнопкой смены темы
-themeToggle.addEventListener("click", () => {
-    syncSettingsTheme();
-});
+// Обновляем список, если тему меняют кнопкой в верхней панели.
+themeToggle.addEventListener("click", syncSettingsTheme);
 
 
 // ==========================================
