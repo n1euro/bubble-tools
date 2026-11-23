@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app">
+
+        <!-- Боковая панель -->
+        <aside class="sidebar">
+            <a href="#" class="logo">bubble<span>.</span></a>
+
+            <p class="sidebar-label">МЕНЮ</p>
+
+            <nav>
+                <a href="#overview">Обзор</a>
+                <a href="#calculator">Калькулятор</a>
+                <a href="#tasks">Мои задачи</a>
+                <a href="#expenses">Расходы</a>
+                <a href="#notes">Заметки</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                Твоё пространство для продуктивности ✨
+            </div>
+        </aside>
+
+        <!-- Основная часть -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">ТВОЁ РАБОЧЕЕ ПРОСТРАНСТВО</p>
+                    <h1>Привет! 👋</h1>
+                    <p>Чем займёмся сегодня?</p>
+                </div>
+
+                <button id="theme-toggle">Сменить тему</button>
+            </header>
+
+            <!-- Приветственный блок -->
+            <section class="welcome-card" id="overview">
+                <div>
+                    <span class="welcome-tag">BUBBLE TOOLS</span>
+                    <h2>Всё нужное<br>в одном месте.</h2>
+                    <p>Организуй задачи, следи за расходами и работай удобнее.</p>
+                </div>
+                <div class="welcome-decoration">✦</div>
+            </section> 
+            <!-- USER PROFILE -->
+
+<!-- AUTHENTICATION -->
+<section class="auth-card" id="auth-section">
+
+    <div class="auth-heading">
+        <span>☁️ BUBBLE CLOUD</span>
+        <h2 id="auth-title">Вход в аккаунт</h2>
+        <p id="auth-description">
+            Войди, чтобы получить доступ к своим данным с разных устройств.
+        </p>
+    </div>
+
+    <form id="auth-form">
+
+        <label for="auth-email">Электронная почта</label>
+        <input
+            type="email"
+            id="auth-email"
+            placeholder="example@email.com"
+            autocomplete="email"
+            required
+        >
+
+        <label for="auth-password">Пароль</label>
+        <input
+            type="password"
+            id="auth-password"
+            placeholder="Минимум 8 символов"
+            minlength="8"
+            autocomplete="current-password"
+            required
+        >
+
+        <button type="submit" id="auth-submit">
+            Войти
+        </button>
+
+    </form>
+
+    <button type="button" id="auth-toggle">
+        Нет аккаунта? Зарегистрироваться
+    </button>
+
+    <p id="auth-message" aria-live="polite"></p>
+
+    <div id="auth-session" hidden>
+        <p id="auth-user-email"></p>
+        <button type="button" id="auth-logout">
+            Выйти из аккаунта
+        </button>
+    </div>
+
+</section>
+
+<section class="profile-card" id="profile">
+
+    <div class="profile-avatar" id="profile-avatar">
+        B
+    </div>
+
+    <div class="profile-info">
+        <span>ТВОЙ ПРОФИЛЬ</span>
+        <h2 id="profile-name">Пользователь</h2>
+        <p>Личное пространство Bubble Tools</p>
+    </div>
+
+    <form id="profile-form">
+        <input
+            type="text"
+            id="profile-name-input"
+            placeholder="Твоё имя"
+            maxlength="30"
+            required
+        >
+
+        <button type="submit">
+            Сохранить
+        </button>
+    </form>
+
+</section>
+<!-- FINANCIAL STATISTICS -->
+<section class="stats-grid" id="analytics">
+
+    <article class="stat-card">
+        <span>Всего расходов</span>
+        <strong id="stat-total">0,00 €</strong>
+        <small>За всё время</small>
+    </article>
+
+    <article class="stat-card">
+        <span>Количество покупок</span>
+        <strong id="stat-count">0</strong>
+        <small>Всего записей</small>
+    </article>
+
+    <article class="stat-card">
+        <span>Средний расход</span>
+        <strong id="stat-average">0,00 €</strong>
+        <small>На одну покупку</small>
+    </article>
+
+</section>
+
+<!-- FINANCIAL CHARTS -->
+
+<div class="analytics-currency-control">
+    <label for="analytics-currency">
+        Валюта статистики:
+    </label>
+
+    <select id="analytics-currency">
+        <option value="EUR">EUR — Евро</option>
+        <option value="USD">USD — Доллар</option>
+        <option value="RUB">RUB — Рубль</option>
+        <option value="UAH">UAH — Гривна</option>
+        <option value="GBP">GBP — Фунт</option>
+        <option value="PLN">PLN — Злотый</option>
+        <option value="CHF">CHF — Франк</option>
+    </select>
+</div>
+
+<section class="charts-grid">
+
+    <article class="chart-card">
+        <h2>Расходы по категориям</h2>
+        <div class="chart-container">
+            <canvas id="category-chart"></canvas>
+        </div>
+    </article>
+
+    <article class="chart-card">
+        <h2>Расходы за 7 дней</h2>
+        <div class="chart-container">
+            <canvas id="weekly-chart"></canvas>
+        </div>
+    </article>
+
+</section>
+
+
+            <!-- Инструменты -->
+            <section class="tools-grid">
+
+                <!-- Калькулятор -->
+                <article class="tool-card" id="calculator">
+                    <h2>🧮 Калькулятор</h2>
+                    <input id="calc-display" type="text" placeholder="0" readonly>
+
+                    <div class="calc-buttons">
+                        <button data-value="7">7</button>
+                        <button data-value="8">8</button>
+                        <button data-value="9">9</button>
+                        <button data-value="/">÷</button>
+
+                        <button data-value="4">4</button>
+                        <button data-value="5">5</button>
+                        <button data-value="6">6</button>
+                        <button data-value="*">×</button>
+
+                        <button data-value="1">1</button>
+                        <button data-value="2">2</button>
+                        <button data-value="3">3</button>
+                        <button data-value="-">−</button>
+
+                        <button data-value="0">0</button>
+                        <button data-value=".">.</button>
+                        <button id="calc-clear">C</button>
+                        <button data-value="+">+</button>
+
+                        <button id="calc-equals" class="equals">=</button>
+                    </div>
+                </article>
+
+                <!-- Список задач -->
+                <article class="tool-card" id="tasks">
+                    <h2>✅ Мои задачи</h2>
+
+                    <form id="task-form">
+                        <input id="task-input" type="text"
+                            placeholder="Новая задача..." required>
+                        <button type="submit">Добавить</button>
+                    </form>
+
+                    <ul id="task-list"></ul>
+                </article>
+
+                <!-- Расходы -->
+                <article class="tool-card" id="expenses">
+                    <h2>💰 Учёт расходов</h2>
+
+                    <form id="expense-form">
+                        <input id="expense-title" type="text"
+                            placeholder="На что потратил?" required>
+
+                        <input id="expense-amount" type="number"
+                            placeholder="Сумма (€)" min="0.01"
+                            step="0.01" required>
+
+
+    
+<form id="expense-form">
+
+    
+
+    
+
+    <select id="expense-category" required>
+        <option value="food">🍔 Еда</option>
+        <option value="transport">🚗 Транспорт</option>
+        <option value="shopping">🛍️ Покупки</option>
+        <option value="entertainment">🎮 Развлечения</option>
+        <option value="subscriptions">💻 Подписки</option>
+        <option value="other">📦 Другое</option>
+    </select>
+
+    <select id="expense-currency" required>
+        <option value="EUR">🇪🇺 EUR — Евро (€)</option>
+        <option value="USD">🇺🇸 USD — Доллар ($)</option>
+        <option value="RUB">🇷🇺 RUB — Рубль (₽)</option>
+        <option value="UAH">🇺🇦 UAH — Гривна (₴)</option>
+        <option value="GBP">🇬🇧 GBP — Фунт (£)</option>
+        <option value="PLN">🇵🇱 PLN — Злотый (zł)</option>
+        <option value="CHF">🇨🇭 CHF — Франк (CHF)</option>
+    </select>
+
+    <button type="submit">Добавить расход</button>
+
+</form>
+
+
+
+                        <button type="submit">Добавить расход</button>
+                    </form>
+
+                    <p class="expense-total">
+                        Всего потрачено:
+                        <strong id="expense-total">0,00 €</strong>
+                    </p>
+
+                    <ul id="expense-list"></ul>
+                </article>
+
+                <!-- Заметки -->
+                <article class="tool-card" id="notes">
+                    <h2>📝 Мои заметки</h2>
+
+                    <textarea id="notes-input"
+                        placeholder="Запиши свои мысли..."></textarea>
+
+                    <button id="save-note">Сохранить заметку</button>
+
+                    <p id="notes-status"></p>
+                </article>
+
+            </section>
+
+            <footer>
+                Made with bubble. ✨
+            </footer>
+
+        </main>
+    </div>
+
+    
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Настройки Supabase -->
+<script src="supabase-config.js"></script>
+
+<!-- Основной JavaScript -->
+<script src="script.js"></script>
+</body>
+</html>
