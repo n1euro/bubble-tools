@@ -23,6 +23,7 @@
                 <a href="#tasks">Мои задачи</a>
                 <a href="#expenses">Расходы</a>
                 <a href="#notes">Заметки</a>
+                <a href="#settings">Настройки</a>
             </nav>
 
             <div class="sidebar-bottom">
@@ -313,6 +314,114 @@
                 </article>
 
             </section>
+
+<!-- SETTINGS CENTER -->
+
+<section class="settings-section" id="settings">
+
+    <div class="settings-header">
+        <span>PERSONALIZATION</span>
+        <h2>Настройки</h2>
+        <p>Настрой BUBBLE TOOLS под себя.</p>
+    </div>
+
+    <div class="settings-grid">
+
+        <!-- CURRENCY -->
+        <article class="settings-card">
+
+            <div class="settings-card-heading">
+                <div class="settings-icon">💱</div>
+                <div>
+                    <h3>Основная валюта</h3>
+                    <p>Для новых расходов</p>
+                </div>
+            </div>
+
+            <label for="default-currency">
+                Валюта по умолчанию
+            </label>
+
+            <select id="default-currency">
+                <option value="EUR">🇪🇺 EUR — Евро</option>
+                <option value="USD">🇺🇸 USD — Доллар</option>
+                <option value="RUB">🇷🇺 RUB — Рубль</option>
+                <option value="UAH">🇺🇦 UAH — Гривна</option>
+                <option value="GBP">🇬🇧 GBP — Фунт</option>
+                <option value="PLN">🇵🇱 PLN — Злотый</option>
+                <option value="CHF">🇨🇭 CHF — Франк</option>
+            </select>
+
+        </article>
+
+        <!-- APPEARANCE -->
+        <article class="settings-card">
+
+            <div class="settings-card-heading">
+                <div class="settings-icon">🎨</div>
+                <div>
+                    <h3>Оформление</h3>
+                    <p>Выбери внешний вид приложения</p>
+                </div>
+            </div>
+
+            <label for="settings-theme">
+                Цветовая тема
+            </label>
+
+            <select id="settings-theme">
+                <option value="light">☀️ Светлая</option>
+                <option value="dark">🌙 Тёмная</option>
+            </select>
+
+        </article>
+
+        <!-- NOTIFICATIONS -->
+        <article class="settings-card">
+
+            <div class="settings-card-heading">
+                <div class="settings-icon">🔔</div>
+                <div>
+                    <h3>Уведомления</h3>
+                    <p>Всплывающие сообщения приложения</p>
+                </div>
+            </div>
+
+            <label class="settings-switch">
+                <span>Показывать уведомления</span>
+                <input
+                    type="checkbox"
+                    id="notifications-enabled"
+                    checked
+                >
+            </label>
+
+        </article>
+
+        <!-- ACCOUNT -->
+        <article class="settings-card">
+
+            <div class="settings-card-heading">
+                <div class="settings-icon">👤</div>
+                <div>
+                    <h3>Аккаунт</h3>
+                    <p>Управление личными данными</p>
+                </div>
+            </div>
+
+            <a class="settings-link" href="#profile">
+                Мой профиль →
+            </a>
+
+            <a class="settings-link" href="#auth-section">
+                Управление аккаунтом →
+            </a>
+
+        </article>
+
+    </div>
+
+</section>
 
             <footer>
                 Made with bubble. ✨
