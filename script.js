@@ -717,7 +717,13 @@ expenseForm.addEventListener("submit", async event => {
         expenseForm.reset();
 
         // Возвращаем валюту формы к EUR
-        expenseCurrency.value = "EUR";
+        const lastCurrency = localStorage.getItem(
+    "bubble-tools-last-expense-currency"
+);
+
+expenseCurrency.value = availableCurrencies.includes(lastCurrency)
+    ? lastCurrency
+    : (localStorage.getItem("bubble-tools-default-currency") || "EUR");
 
         renderExpenses();
 
@@ -1294,7 +1300,9 @@ console.log("Cloud Profile подключён!");
 // 10. BUBBLE TOAST NOTIFICATIONS
 // ==========================================
 
-function showToast(message, type = "success") {
+function showToast(message, type = "success") {if (localStorage.getItem("bubble-tools-notifications") === "off") {
+    return;
+}
     let container = document.querySelector(".toast-container");
 
     if (!container) {
@@ -1487,3 +1495,146 @@ function showToast(message, type = "success") {
 
     console.log("Bubble Cloud Auth готов!");
 })();
+
+/* ==========================================
+   BUBBLE TOOLS 2.0 — SETTINGS FUNCTIONALITY
+========================================== */
+
+// Элементы настроек
+const defaultCurrencySelect =
+    document.getElementById("default-currency");
+
+const settingsThemeSelect =
+    document.getElementById("settings-theme");
+
+const notificationsEnabled =
+    document.getElementById("notifications-enabled");
+
+
+// ==========================================
+// 1. ОСНОВНАЯ ВАЛЮТА
+// ==========================================
+
+const availableCurrencies = [
+    "EUR", "USD", "RUB", "UAH", "GBP", "PLN", "CHF"
+];
+
+
+function loadDefaultCurrency() {
+    const savedDefault = localStorage.getItem(
+        "bubble-tools-default-currency"
+    );
+
+    const defaultCurrency = availableCurrencies.includes(savedDefault)
+        ? savedDefault
+        : "EUR";
+
+    defaultCurrencySelect.value = defaultCurrency;
+
+    const savedExpenseCurrency = localStorage.getItem(
+        "bubble-tools-last-expense-currency"
+    );
+
+    expenseCurrency.value = availableCurrencies.includes(savedExpenseCurrency)
+        ? savedExpenseCurrency
+        : defaultCurrency;
+}
+
+
+loadDefaultCurrency();
+
+expenseCurrency.addEventListener("change", () => {
+    localStorage.setItem(
+        "bubble-tools-last-expense-currency",
+        expenseCurrency.value
+    );
+});
+
+defaultCurrencySelect.addEventListener("change", () => {
+    const currency = defaultCurrencySelect.value;
+
+    if (!availableCurrencies.includes(currency)) return;
+
+    localStorage.setItem(
+        "bubble-tools-default-currency",
+        currency
+    );
+
+    expenseCurrency.value = currency;
+
+    showToast("Основная валюта изменена!", "success");
+    localStorage.setItem(
+    "bubble-tools-default-currency",
+    currency
+);localStorage.setItem(
+    "bubble-tools-last-expense-currency",
+    currency
+);
+});
+
+
+// ==========================================
+// 2. ТЕМА ПРИЛОЖЕНИЯ
+// ==========================================
+
+function syncSettingsTheme() {
+    settingsThemeSelect.value =
+        document.body.classList.contains("dark")
+            ? "dark"
+            : "light";
+}
+
+syncSettingsTheme();
+
+settingsThemeSelect.addEventListener("change", () => {
+    const theme = settingsThemeSelect.value;
+
+    document.body.classList.toggle(
+        "dark",
+        theme === "dark"
+    );
+
+    localStorage.setItem("bubble-tools-theme", theme);
+
+    if (typeof updateThemeButton === "function") {
+        updateThemeButton();
+    }
+
+    showToast(
+        theme === "dark"
+            ? "Тёмная тема включена"
+            : "Светлая тема включена",
+        "success"
+    );
+});
+
+// Синхронизация с кнопкой смены темы
+themeToggle.addEventListener("click", () => {
+    syncSettingsTheme();
+});
+
+
+// ==========================================
+// 3. УВЕДОМЛЕНИЯ
+// ==========================================
+
+const savedNotifications = localStorage.getItem(
+    "bubble-tools-notifications"
+);
+
+notificationsEnabled.checked = savedNotifications !== "off";
+
+notificationsEnabled.addEventListener("change", () => {
+    const enabled = notificationsEnabled.checked;
+
+    localStorage.setItem(
+        "bubble-tools-notifications",
+        enabled ? "on" : "off"
+    );
+
+    if (enabled) {
+        showToast("Уведомления включены!", "success");
+    }
+});
+
+console.log("Bubble Tools Settings подключены!");
