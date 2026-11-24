@@ -1722,3 +1722,157 @@ footer {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* ==========================================
+   CYBERPUNK MOTION — SUBTLE INTERACTIONS
+========================================== */
+
+@keyframes cyber-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cyber-logo-pulse {
+    0%, 100% {
+        text-shadow: 0 0 9px rgba(0, 229, 255, 0.42), 0 0 22px rgba(0, 229, 255, 0.15);
+    }
+    50% {
+        text-shadow: 0 0 13px rgba(0, 229, 255, 0.78), 0 0 32px rgba(0, 229, 255, 0.28);
+    }
+}
+
+@keyframes cyber-pink-pulse {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(0, 229, 255, 0.18);
+    }
+    50% {
+        box-shadow: 0 0 22px rgba(255, 60, 172, 0.22), 0 0 34px rgba(0, 229, 255, 0.12);
+    }
+}
+
+.logo {
+    animation: cyber-logo-pulse 3.8s ease-in-out infinite;
+}
+
+.welcome-tag {
+    animation: cyber-pink-pulse 4.5s ease-in-out infinite;
+}
+
+.welcome-card,
+.auth-card,
+.profile-card,
+.stat-card,
+.chart-card,
+.tool-card,
+.settings-card {
+    animation: cyber-fade-up 650ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.auth-card { animation-delay: 70ms; }
+.profile-card { animation-delay: 120ms; }
+.stat-card:nth-child(2) { animation-delay: 80ms; }
+.stat-card:nth-child(3) { animation-delay: 150ms; }
+.chart-card:nth-child(2) { animation-delay: 90ms; }
+.tool-card:nth-child(2) { animation-delay: 80ms; }
+.tool-card:nth-child(3) { animation-delay: 150ms; }
+.tool-card:nth-child(4) { animation-delay: 220ms; }
+.settings-card:nth-child(2) { animation-delay: 70ms; }
+.settings-card:nth-child(3) { animation-delay: 140ms; }
+.settings-card:nth-child(4) { animation-delay: 210ms; }
+
+.tool-card,
+.stat-card,
+.chart-card,
+.profile-card,
+.auth-card,
+.settings-card {
+    transition:
+        transform 240ms ease,
+        border-color 240ms ease,
+        box-shadow 240ms ease,
+        background-color 240ms ease;
+}
+
+.tool-card:hover,
+.stat-card:hover,
+.chart-card:hover,
+.profile-card:hover,
+.auth-card:hover,
+.settings-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 229, 255, 0.58);
+    box-shadow:
+        0 0 0 1px rgba(0, 229, 255, 0.08),
+        0 0 24px rgba(0, 229, 255, 0.13),
+        0 18px 42px rgba(0, 0, 0, 0.3);
+}
+
+button,
+.settings-link,
+.sidebar nav a {
+    transition:
+        transform 180ms ease,
+        color 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
+input,
+textarea,
+select {
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        background-color 180ms ease;
+}
+
+.settings-link:hover {
+    transform: translateX(5px);
+    box-shadow: 0 0 16px rgba(0, 229, 255, 0.1);
+}
+
+.sidebar nav a:active {
+    transform: translateX(2px) scale(0.99);
+}
+
+@media (max-width: 700px) {
+    .tool-card:hover,
+    .stat-card:hover,
+    .chart-card:hover,
+    .profile-card:hover,
+    .auth-card:hover,
+    .settings-card:hover {
+        transform: translateY(-2px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo,
+    .welcome-tag,
+    .welcome-card,
+    .auth-card,
+    .profile-card,
+    .stat-card,
+    .chart-card,
+    .tool-card,
+    .settings-card {
+        animation: none !important;
+    }
+}
