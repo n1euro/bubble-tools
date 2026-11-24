@@ -475,13 +475,23 @@ function updateDashboard() {
     const now = new Date();
     const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
     const previousMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const previousMonthKey = `${previousMonthDate.getFullYear()}-${String(previousMonthDate.getMonth() + 1).padStart(2, "0")}`;
+    const previousMonthLastDay = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    const previousMonthComparableEnd = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
+        Math.min(now.getDate(), previousMonthLastDay)
+    );
+    const previousMonthStartKey = getExpenseDateKey(previousMonthDate);
+    const previousMonthEndKey = getExpenseDateKey(previousMonthComparableEnd);
 
     const currentMonthTotal = selectedExpenses
         .filter(item => String(item.spent_on || "").startsWith(monthKey))
         .reduce((sum, item) => sum + Number(item.amount || 0), 0);
     const previousMonthTotal = selectedExpenses
-        .filter(item => String(item.spent_on || "").startsWith(previousMonthKey))
+        .filter(item => {
+            const dateKey = String(item.spent_on || "");
+            return dateKey >= previousMonthStartKey && dateKey <= previousMonthEndKey;
+        })
         .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
     const lastSevenDays = [];
@@ -490,7 +500,7 @@ function updateDashboard() {
         date.setDate(now.getDate() - i);
         lastSevenDays.push({
             key: getExpenseDateKey(date),
-            label: date.toLocaleDateString("ru-RU", { weekday: "short" })
+            label: date.toLocaleDateString("ru-RU", { weekday: "short", day: "numeric" })
         });
     }
 
