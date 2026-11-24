@@ -456,6 +456,7 @@ let weeklyChart = null;
 let monthlyChart = null;
 
 /* LIVE DASHBOARD */
+window.bubbleDashboardReady = true;
 function updateDashboard() {
  const active=tasks.filter(task=>!task.completed).length;
  const done=tasks.filter(task=>task.completed).length;
