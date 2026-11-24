@@ -456,29 +456,197 @@ let expenseLoadVersion = 0;
 let categoryChart = null;
 let weeklyChart = null;
 let monthlyChart = null;
+let dashboardWeeklyChart = null;
 
 /* LIVE DASHBOARD */
 window.bubbleDashboardReady = true;
 function updateDashboard() {
- const active=tasks.filter(task=>!task.completed).length;
- const done=tasks.filter(task=>task.completed).length;
- const selected=expenses.filter(item=>(supportedCurrencies.includes(item.currency)?item.currency:"EUR")===selectedAnalyticsCurrency);
- const now=new Date();
- const key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
- const monthTotal=selected.filter(item=>String(item.spent_on||"").startsWith(key)).reduce((sum,item)=>sum+Number(item.amount||0),0);
- document.getElementById("dashboard-active-tasks").textContent=taskUserId?active:"—";
- document.getElementById("dashboard-done-tasks").textContent=taskUserId?done:"—";
- document.getElementById("dashboard-month-expenses").textContent=expenseUserId?formatExpenseMoney(monthTotal,selectedAnalyticsCurrency):"—";
- document.getElementById("dashboard-expense-count").textContent=expenseUserId?selected.length:"—";
- document.getElementById("dashboard-month-label").textContent=`${now.toLocaleDateString("ru-RU",{month:"long",year:"numeric"})} · ${selectedAnalyticsCurrency}`;
- const taskBox=document.getElementById("dashboard-recent-tasks"); taskBox.innerHTML="";
- if(!taskUserId) taskBox.innerHTML="<li>Войди в аккаунт, чтобы увидеть задачи.</li>";
- else if(!tasks.length) taskBox.innerHTML="<li>Пока задач нет.</li>";
- else tasks.slice(0,4).forEach(task=>{const li=document.createElement("li");li.className=task.completed?"is-complete":"";li.textContent=`${task.completed?"✓":"○"} ${task.text}`;taskBox.appendChild(li);});
- const expenseBox=document.getElementById("dashboard-recent-expenses"); expenseBox.innerHTML="";
- if(!expenseUserId) expenseBox.innerHTML="<li>Войди в аккаунт, чтобы увидеть расходы.</li>";
- else if(!selected.length) expenseBox.innerHTML="<li>Пока расходов нет в выбранной валюте.</li>";
- else selected.slice(0,4).forEach(item=>{const li=document.createElement("li");li.textContent=`${item.title} · ${formatExpenseMoney(item.amount,selectedAnalyticsCurrency)}`;expenseBox.appendChild(li);});
+    const activeTasks = tasks.filter(task => !task.completed).length;
+    const completedTasks = tasks.filter(task => task.completed).length;
+    const totalTasks = tasks.length;
+    const completionPercent = totalTasks
+        ? Math.round((completedTasks / totalTasks) * 100)
+        : 0;
+
+    const selectedExpenses = expenses.filter(item =>
+        (supportedCurrencies.includes(item.currency) ? item.currency : "EUR") === selectedAnalyticsCurrency
+    );
+
+    const now = new Date();
+    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const previousMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const previousMonthLastDay = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    const previousMonthComparableEnd = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
+        Math.min(now.getDate(), previousMonthLastDay)
+    );
+    const previousMonthStartKey = getExpenseDateKey(previousMonthDate);
+    const previousMonthEndKey = getExpenseDateKey(previousMonthComparableEnd);
+
+    const currentMonthTotal = selectedExpenses
+        .filter(item => String(item.spent_on || "").startsWith(monthKey))
+        .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    const previousMonthTotal = selectedExpenses
+        .filter(item => {
+            const dateKey = String(item.spent_on || "");
+            return dateKey >= previousMonthStartKey && dateKey <= previousMonthEndKey;
+        })
+        .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+    const lastSevenDays = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date(now);
+        date.setDate(now.getDate() - i);
+        lastSevenDays.push({
+            key: getExpenseDateKey(date),
+            label: date.toLocaleDateString("ru-RU", { weekday: "short", day: "numeric" })
+        });
+    }
+
+    const previousSevenDays = [];
+    for (let i = 13; i >= 7; i--) {
+        const date = new Date(now);
+        date.setDate(now.getDate() - i);
+        previousSevenDays.push(getExpenseDateKey(date));
+    }
+
+    const weeklyValues = lastSevenDays.map(day =>
+        selectedExpenses
+            .filter(item => item.spent_on === day.key)
+            .reduce((sum, item) => sum + Number(item.amount || 0), 0)
+    );
+    const currentWeekTotal = weeklyValues.reduce((sum, value) => sum + value, 0);
+    const previousWeekTotal = selectedExpenses
+        .filter(item => previousSevenDays.includes(item.spent_on))
+        .reduce((sum, item) => sum + Number(item.amount || 0), 0);
+
+    const describeChange = (current, previous, periodLabel) => {
+        if (previous === 0 && current === 0) return `Нет расходов в ${periodLabel}`;
+        if (previous === 0) return "Появились расходы в этом периоде";
+        const change = Math.round(((current - previous) / previous) * 100);
+        if (change === 0) return "Без изменений к прошлому периоду";
+        const arrow = change > 0 ? "↑" : "↓";
+        const sign = change > 0 ? "+" : "";
+        return `${arrow} ${sign}${change}% к прошлому периоду`;
+    };
+
+    document.getElementById("dashboard-active-tasks").textContent =
+        taskUserId ? activeTasks : "—";
+
+    const progressRing = document.getElementById("dashboard-progress-ring");
+    progressRing.style.setProperty("--progress", `${completionPercent}%`);
+    document.getElementById("dashboard-progress-percent").textContent =
+        taskUserId ? `${completionPercent}%` : "—";
+    document.getElementById("dashboard-progress-caption").textContent =
+        taskUserId
+            ? `${completedTasks} из ${totalTasks} выполнено`
+            : "Войди, чтобы увидеть прогресс";
+
+    document.getElementById("dashboard-month-expenses").textContent =
+        expenseUserId ? formatExpenseMoney(currentMonthTotal, selectedAnalyticsCurrency) : "—";
+    document.getElementById("dashboard-month-change").textContent =
+        expenseUserId
+            ? describeChange(currentMonthTotal, previousMonthTotal, "прошлом месяце")
+            : "Войди, чтобы увидеть расходы";
+
+    document.getElementById("dashboard-week-expenses").textContent =
+        expenseUserId ? formatExpenseMoney(currentWeekTotal, selectedAnalyticsCurrency) : "—";
+    document.getElementById("dashboard-week-change").textContent =
+        expenseUserId
+            ? describeChange(currentWeekTotal, previousWeekTotal, "прошлой неделе")
+            : "Войди, чтобы увидеть расходы";
+
+    const taskBox = document.getElementById("dashboard-recent-tasks");
+    taskBox.innerHTML = "";
+    if (!taskUserId) {
+        taskBox.innerHTML = "<li>Войди в аккаунт, чтобы увидеть задачи.</li>";
+    } else if (!tasks.length) {
+        taskBox.innerHTML = "<li>Пока задач нет.</li>";
+    } else {
+        tasks.slice(0, 4).forEach(task => {
+            const li = document.createElement("li");
+            li.className = task.completed ? "is-complete" : "";
+            li.textContent = `${task.completed ? "✓" : "○"} ${task.text}`;
+            taskBox.appendChild(li);
+        });
+    }
+
+    const expenseBox = document.getElementById("dashboard-recent-expenses");
+    expenseBox.innerHTML = "";
+    if (!expenseUserId) {
+        expenseBox.innerHTML = "<li>Войди в аккаунт, чтобы увидеть расходы.</li>";
+    } else if (!selectedExpenses.length) {
+        expenseBox.innerHTML = "<li>Пока расходов нет в выбранной валюте.</li>";
+    } else {
+        selectedExpenses.slice(0, 4).forEach(item => {
+            const li = document.createElement("li");
+            li.textContent = `${item.title} · ${formatExpenseMoney(item.amount, selectedAnalyticsCurrency)}`;
+            expenseBox.appendChild(li);
+        });
+    }
+
+    const weeklyCaption = document.getElementById("dashboard-weekly-caption");
+    if (!expenseUserId) {
+        weeklyCaption.textContent = "Войди в аккаунт, чтобы увидеть динамику расходов.";
+    } else if (currentWeekTotal === 0) {
+        weeklyCaption.textContent = `За последние семь дней расходов в ${selectedAnalyticsCurrency} пока нет.`;
+    } else {
+        weeklyCaption.textContent = `Всего за неделю: ${formatExpenseMoney(currentWeekTotal, selectedAnalyticsCurrency)}`;
+    }
+
+    const weeklyCanvas = document.getElementById("dashboard-weekly-chart");
+    if (weeklyCanvas && typeof Chart !== "undefined") {
+        if (dashboardWeeklyChart) dashboardWeeklyChart.destroy();
+
+        dashboardWeeklyChart = new Chart(weeklyCanvas, {
+            type: "line",
+            data: {
+                labels: lastSevenDays.map(day => day.label),
+                datasets: [{
+                    data: weeklyValues,
+                    borderColor: "#C4CBD2",
+                    backgroundColor: "rgba(190, 199, 207, 0.10)",
+                    pointBackgroundColor: "#D8DDE2",
+                    pointBorderColor: "#7E8993",
+                    pointRadius: 2,
+                    pointHoverRadius: 4,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.38
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 280 },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: context => formatExpenseMoney(
+                                context.raw,
+                                selectedAnalyticsCurrency
+                            )
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: { color: "#929BA4", maxRotation: 0 }
+                    },
+                    y: {
+                        display: false,
+                        beginAtZero: true,
+                        grid: { display: false },
+                        border: { display: false }
+                    }
+                }
+            }
+        });
+    }
 }
 
 

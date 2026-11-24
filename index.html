@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bubble Tools</title>
-    <link rel="stylesheet" href="style.css?v=2.0.5">
+    <link rel="stylesheet" href="style.css?v=2.0.6">
 </head>
 <body>
 
@@ -56,12 +56,43 @@
             <!-- BUBBLE DASHBOARD -->
 <section class="dashboard-section" id="dashboard">
  <div class="dashboard-heading"><span>LIVE OVERVIEW</span><h2>ТВОЯ ПАНЕЛЬ</h2><p>Ключевые показатели и последние события</p></div>
- <div class="dashboard-grid">
-  <article class="dashboard-card"><span>Активные задачи</span><strong id="dashboard-active-tasks">0</strong><small>Осталось выполнить</small></article>
-  <article class="dashboard-card"><span>Выполненные задачи</span><strong id="dashboard-done-tasks">0</strong><small>Уже сделано</small></article>
-  <article class="dashboard-card"><span>Расходы за месяц</span><strong id="dashboard-month-expenses">0,00 €</strong><small id="dashboard-month-label">Текущий месяц</small></article>
-  <article class="dashboard-card"><span>Записей расходов</span><strong id="dashboard-expense-count">0</strong><small>В выбранной валюте</small></article>
+
+ <div class="dashboard-grid dashboard-grid-v2">
+  <article class="dashboard-card">
+   <span>Активные задачи</span>
+   <strong id="dashboard-active-tasks">0</strong>
+   <small>Осталось выполнить</small>
+  </article>
+  <article class="dashboard-card dashboard-progress-card">
+   <div class="dashboard-progress-copy">
+    <span>Выполнение задач</span>
+    <small id="dashboard-progress-caption">0 из 0 выполнено</small>
+   </div>
+   <div class="dashboard-progress-ring" id="dashboard-progress-ring" role="img" aria-label="Прогресс выполнения задач">
+    <div class="dashboard-progress-inner"><strong id="dashboard-progress-percent">0%</strong></div>
+   </div>
+  </article>
+  <article class="dashboard-card">
+   <span>Расходы за месяц</span>
+   <strong id="dashboard-month-expenses">0,00 €</strong>
+   <small id="dashboard-month-change">Текущий месяц</small>
+  </article>
+  <article class="dashboard-card">
+   <span>Расходы за 7 дней</span>
+   <strong id="dashboard-week-expenses">0,00 €</strong>
+   <small id="dashboard-week-change">Последние 7 дней</small>
+  </article>
  </div>
+
+ <article class="dashboard-panel dashboard-mini-chart-panel">
+  <div class="dashboard-panel-heading">
+   <div><h3>Динамика расходов</h3><p>Последние семь дней</p></div>
+   <span class="dashboard-chart-tag">7 DAYS</span>
+  </div>
+  <div class="dashboard-mini-chart-wrap"><canvas id="dashboard-weekly-chart" aria-label="Расходы за последние семь дней" role="img"></canvas></div>
+  <p class="dashboard-chart-caption" id="dashboard-weekly-caption">Здесь появится динамика расходов.</p>
+ </article>
+
  <div class="dashboard-lower">
   <article class="dashboard-panel"><h3>Последние задачи</h3><ul id="dashboard-recent-tasks" class="dashboard-list"><li>Войди в аккаунт, чтобы увидеть задачи.</li></ul></article>
   <article class="dashboard-panel"><h3>Последние расходы</h3><ul id="dashboard-recent-expenses" class="dashboard-list"><li>Войди в аккаунт, чтобы увидеть расходы.</li></ul></article>
@@ -458,6 +489,6 @@
 <script src="supabase-config.js"></script>
 
 <!-- Основной JavaScript -->
-<script src="script.js?v=2.0.5"></script>
+<script src="script.js?v=2.0.6"></script>
 </body>
 </html>
