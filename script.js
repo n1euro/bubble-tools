@@ -182,6 +182,7 @@ function renderTasks() {
         const li = document.createElement("li");
         li.textContent = "Войди в аккаунт, чтобы открыть облачные задачи.";
         taskList.appendChild(li);
+        if (window.bubbleDashboardReady) updateDashboard();
         return;
     }
 
@@ -189,6 +190,7 @@ function renderTasks() {
         const li = document.createElement("li");
         li.textContent = "Пока задач нет. Добавь первую!";
         taskList.appendChild(li);
+        if (window.bubbleDashboardReady) updateDashboard();
         return;
     }
 
