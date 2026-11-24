@@ -264,6 +264,7 @@ function renderTasks() {
         li.append(text, completeButton, deleteButton);
         taskList.appendChild(li);
     });
+    if (window.bubbleDashboardReady) updateDashboard();
 }
 
 
@@ -452,6 +453,32 @@ let expenseLoadVersion = 0;
 
 let categoryChart = null;
 let weeklyChart = null;
+let monthlyChart = null;
+
+/* LIVE DASHBOARD */
+window.bubbleDashboardReady = true;
+function updateDashboard() {
+ const active=tasks.filter(task=>!task.completed).length;
+ const done=tasks.filter(task=>task.completed).length;
+ const selected=expenses.filter(item=>(supportedCurrencies.includes(item.currency)?item.currency:"EUR")===selectedAnalyticsCurrency);
+ const now=new Date();
+ const key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+ const monthTotal=selected.filter(item=>String(item.spent_on||"").startsWith(key)).reduce((sum,item)=>sum+Number(item.amount||0),0);
+ document.getElementById("dashboard-active-tasks").textContent=taskUserId?active:"—";
+ document.getElementById("dashboard-done-tasks").textContent=taskUserId?done:"—";
+ document.getElementById("dashboard-month-expenses").textContent=expenseUserId?formatExpenseMoney(monthTotal,selectedAnalyticsCurrency):"—";
+ document.getElementById("dashboard-expense-count").textContent=expenseUserId?selected.length:"—";
+ document.getElementById("dashboard-month-label").textContent=`${now.toLocaleDateString("ru-RU",{month:"long",year:"numeric"})} · ${selectedAnalyticsCurrency}`;
+ const taskBox=document.getElementById("dashboard-recent-tasks"); taskBox.innerHTML="";
+ if(!taskUserId) taskBox.innerHTML="<li>Войди в аккаунт, чтобы увидеть задачи.</li>";
+ else if(!tasks.length) taskBox.innerHTML="<li>Пока задач нет.</li>";
+ else tasks.slice(0,4).forEach(task=>{const li=document.createElement("li");li.className=task.completed?"is-complete":"";li.textContent=`${task.completed?"✓":"○"} ${task.text}`;taskBox.appendChild(li);});
+ const expenseBox=document.getElementById("dashboard-recent-expenses"); expenseBox.innerHTML="";
+ if(!expenseUserId) expenseBox.innerHTML="<li>Войди в аккаунт, чтобы увидеть расходы.</li>";
+ else if(!selected.length) expenseBox.innerHTML="<li>Пока расходов нет в выбранной валюте.</li>";
+ else selected.slice(0,4).forEach(item=>{const li=document.createElement("li");li.textContent=`${item.title} · ${formatExpenseMoney(item.amount,selectedAnalyticsCurrency)}`;expenseBox.appendChild(li);});
+}
+
 
 if (analyticsCurrencySelect) {
     analyticsCurrencySelect.value = selectedAnalyticsCurrency;
@@ -789,6 +816,7 @@ function updateAnalytics() {
     document.getElementById("stat-average").textContent =
         formatExpenseMoney(average, selectedAnalyticsCurrency);
 
+    updateDashboard();
     updateCharts();
 }
 
@@ -951,6 +979,23 @@ function updateCharts() {
             }
         }
     });
+
+    const currentMonth = new Date();
+    const previousMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+    const monthSum = date => {
+        const monthKey = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+        return filteredExpenses.filter(item=>String(item.spent_on||"").startsWith(monthKey))
+            .reduce((sum,item)=>sum+Number(item.amount||0),0);
+    };
+    if (monthlyChart) monthlyChart.destroy();
+    monthlyChart = new Chart(document.getElementById("monthly-chart"), {
+        type:"bar",
+        data:{labels:[previousMonth.toLocaleDateString("ru-RU",{month:"long"}),currentMonth.toLocaleDateString("ru-RU",{month:"long"})],
+            datasets:[{label:`Расходы (${selectedAnalyticsCurrency})`,data:[monthSum(previousMonth),monthSum(currentMonth)],backgroundColor:["#F04FAD","#00D9F5"],borderRadius:12,maxBarThickness:54}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context=>formatExpenseMoney(context.raw,selectedAnalyticsCurrency)}}},
+            scales:{y:{beginAtZero:true,ticks:{callback:value=>formatExpenseMoney(value,selectedAnalyticsCurrency)}}}}
+    });
+
 }
 
 // ==========================================

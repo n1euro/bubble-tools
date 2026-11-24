@@ -53,7 +53,22 @@
                 </div>
                 <div class="welcome-decoration">✦</div>
             </section> 
-            <!-- USER PROFILE -->
+            <!-- BUBBLE DASHBOARD -->
+<section class="dashboard-section" id="dashboard">
+ <div class="dashboard-heading"><span>LIVE OVERVIEW</span><h2>ТВОЯ ПАНЕЛЬ</h2><p>Ключевые показатели и последние события</p></div>
+ <div class="dashboard-grid">
+  <article class="dashboard-card"><span>Активные задачи</span><strong id="dashboard-active-tasks">0</strong><small>Осталось выполнить</small></article>
+  <article class="dashboard-card"><span>Выполненные задачи</span><strong id="dashboard-done-tasks">0</strong><small>Уже сделано</small></article>
+  <article class="dashboard-card"><span>Расходы за месяц</span><strong id="dashboard-month-expenses">0,00 €</strong><small id="dashboard-month-label">Текущий месяц</small></article>
+  <article class="dashboard-card"><span>Записей расходов</span><strong id="dashboard-expense-count">0</strong><small>В выбранной валюте</small></article>
+ </div>
+ <div class="dashboard-lower">
+  <article class="dashboard-panel"><h3>Последние задачи</h3><ul id="dashboard-recent-tasks" class="dashboard-list"><li>Войди в аккаунт, чтобы увидеть задачи.</li></ul></article>
+  <article class="dashboard-panel"><h3>Последние расходы</h3><ul id="dashboard-recent-expenses" class="dashboard-list"><li>Войди в аккаунт, чтобы увидеть расходы.</li></ul></article>
+ </div>
+</section>
+
+<!-- USER PROFILE -->
 
 <!-- AUTHENTICATION -->
 <section class="auth-card" id="auth-section">
@@ -191,6 +206,8 @@
             <canvas id="weekly-chart"></canvas>
         </div>
     </article>
+    <article class="chart-card"><h2>Сравнение месяцев</h2><div class="chart-container"><canvas id="monthly-chart"></canvas></div></article>
+
 
 </section>
 
