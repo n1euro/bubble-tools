@@ -435,12 +435,12 @@ const categoryNames = {
 };
 
 const categoryColors = [
-    "#B58AE8",
-    "#F0A9CC",
-    "#8ECFC5",
-    "#F4C77E",
-    "#91A8EC",
-    "#A9A0B8"
+    "#D2D8DE",
+    "#AEB7C0",
+    "#87929D",
+    "#68747F",
+    "#E3E7EA",
+    "#98A2AB"
 ];
 
 let selectedAnalyticsCurrency = supportedCurrencies.includes(
@@ -832,6 +832,9 @@ function updateCharts() {
         return;
     }
 
+    Chart.defaults.color = "#B7C0C8";
+    Chart.defaults.borderColor = "rgba(190, 199, 207, 0.13)";
+
     const categoryCanvas =
         document.getElementById("category-chart");
 
@@ -945,7 +948,7 @@ function updateCharts() {
             datasets: [{
                 label: `Расходы (${selectedAnalyticsCurrency})`,
                 data: weeklyValues,
-                backgroundColor: "#B58AE8",
+                backgroundColor: "#AEB7C0",
                 borderRadius: 10,
                 maxBarThickness: 35
             }]
@@ -993,7 +996,7 @@ function updateCharts() {
     monthlyChart = new Chart(document.getElementById("monthly-chart"), {
         type:"bar",
         data:{labels:[previousMonth.toLocaleDateString("ru-RU",{month:"long"}),currentMonth.toLocaleDateString("ru-RU",{month:"long"})],
-            datasets:[{label:`Расходы (${selectedAnalyticsCurrency})`,data:[monthSum(previousMonth),monthSum(currentMonth)],backgroundColor:["#F04FAD","#00D9F5"],borderRadius:12,maxBarThickness:54}]},
+            datasets:[{label:`Расходы (${selectedAnalyticsCurrency})`,data:[monthSum(previousMonth),monthSum(currentMonth)],backgroundColor: ["#7E8993", "#D0D6DC"],borderRadius:12,maxBarThickness:54}]},
         options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:context=>formatExpenseMoney(context.raw,selectedAnalyticsCurrency)}}},
             scales:{y:{beginAtZero:true,ticks:{callback:value=>formatExpenseMoney(value,selectedAnalyticsCurrency)}}}}
     });
